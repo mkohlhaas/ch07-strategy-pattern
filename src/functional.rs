@@ -32,3 +32,28 @@ fn main() {
     println!("{}", upper_processor.format("hello rust")); // Output: HELLO RUST
     println!("{}", slug_processor.format("hello rust")); // Output: hello-rust
 }
+
+// ===== //
+// Tests //
+// ===== //
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn uppercase_formatter() {
+        let upper_processor = TextProcessor {
+            formatter: |text: &str| text.to_uppercase(),
+        };
+        assert_eq!(upper_processor.format("hello rust"), "HELLO RUST");
+    }
+
+    #[test]
+    fn slugify_formatter() {
+        let slug_processor = TextProcessor {
+            formatter: |text: &str| text.replace(" ", "-").to_lowercase(),
+        };
+        assert_eq!(slug_processor.format("hello rust"), "hello-rust");
+    }
+}

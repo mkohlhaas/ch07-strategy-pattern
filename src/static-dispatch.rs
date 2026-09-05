@@ -3,7 +3,7 @@
 // ================================ //
 
 trait PaymentStrategy {
-    fn pay(&self, amount: u32);
+    fn pay(&self, amount: u32) -> String;
 }
 
 // ================================ //
@@ -19,8 +19,8 @@ struct CreditCard {
 }
 
 impl PaymentStrategy for CreditCard {
-    fn pay(&self, amount: u32) {
-        println!("Paid {} using Credit Card ({})", amount, self.card_number);
+    fn pay(&self, amount: u32) -> String {
+        format!("Paid {} using Credit Card ({})", amount, self.card_number)
     }
 }
 
@@ -33,8 +33,8 @@ struct PayPal {
 }
 
 impl PaymentStrategy for PayPal {
-    fn pay(&self, amount: u32) {
-        println!("Paid {} using PayPal ({})", amount, self.email);
+    fn pay(&self, amount: u32) -> String {
+        format!("Paid {} using PayPal ({})", amount, self.email)
     }
 }
 
@@ -51,8 +51,8 @@ impl<T: PaymentStrategy> CheckoutContext<T> {
         Self { strategy }
     }
 
-    fn complete_purchase(&self, amount: u32) {
-        self.strategy.pay(amount);
+    fn complete_purchase(&self, amount: u32) -> String {
+        self.strategy.pay(amount)
     }
 }
 
@@ -66,7 +66,7 @@ fn main() {
         let card_checkout = CheckoutContext::new(CreditCard {
             card_number: String::from("1234-5678"),
         });
-        card_checkout.complete_purchase(100);
+        println!("{}", card_checkout.complete_purchase(100));
     }
 
     {
@@ -74,6 +74,50 @@ fn main() {
         let paypal_checkout = CheckoutContext::new(PayPal {
             email: String::from("user@example.com"),
         });
-        paypal_checkout.complete_purchase(250);
+        println!("{}", paypal_checkout.complete_purchase(250));
+    }
+}
+
+// ===== //
+// Tests //
+// ===== //
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn credit_card_returns_formatted_receipt() {
+        let strategy = CreditCard {
+            card_number: String::from("1234-5678"),
+        };
+        assert_eq!(strategy.pay(100), "Paid 100 using Credit Card (1234-5678)");
+    }
+
+    #[test]
+    fn paypal_returns_formatted_receipt() {
+        let strategy = PayPal {
+            email: String::from("user@example.com"),
+        };
+        assert_eq!(strategy.pay(250), "Paid 250 using PayPal (user@example.com)");
+    }
+
+    #[test]
+    fn checkout_context_dispatches_to_injected_strategy() {
+        let card = CheckoutContext::new(CreditCard {
+            card_number: String::from("1234-5678"),
+        });
+        assert_eq!(
+            card.complete_purchase(100),
+            "Paid 100 using Credit Card (1234-5678)"
+        );
+
+        let paypal = CheckoutContext::new(PayPal {
+            email: String::from("user@example.com"),
+        });
+        assert_eq!(
+            paypal.complete_purchase(250),
+            "Paid 250 using PayPal (user@example.com)"
+        );
     }
 }
