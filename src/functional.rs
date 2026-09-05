@@ -18,19 +18,34 @@ where
     }
 }
 
+// ===== //
+// Usage //
+// ===== //
+
 fn main() {
-    // Strategy A: Uppercase formatter via closure
-    let upper_processor = TextProcessor {
-        formatter: |text: &str| text.to_uppercase(),
-    };
+    {
+        // =========================================== //
+        // Strategy A: Uppercase formatter via closure //
+        // =========================================== //
 
-    // Strategy B: Slugify formatter via closure
-    let slug_processor = TextProcessor {
-        formatter: |text: &str| text.replace(" ", "-").to_lowercase(),
-    };
+        let upper_processor = TextProcessor {
+            formatter: |text: &str| text.to_uppercase(),
+        };
 
-    println!("{}", upper_processor.format("hello rust")); // Output: HELLO RUST
-    println!("{}", slug_processor.format("hello rust")); // Output: hello-rust
+        println!("{}", upper_processor.format("hello rust")); // Output: HELLO RUST
+    }
+
+    {
+        // ========================================= //
+        // Strategy B: Slugify formatter via closure //
+        // ========================================= //
+
+        let slug_processor = TextProcessor {
+            formatter: |text: &str| text.replace(" ", "-").to_lowercase(),
+        };
+
+        println!("{}", slug_processor.format("hello rust")); // Output: hello-rust
+    }
 }
 
 // ===== //
