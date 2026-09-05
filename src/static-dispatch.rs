@@ -43,16 +43,16 @@ impl PaymentStrategy for PayPal {
 // ==================================== //
 
 struct CheckoutContext<T: PaymentStrategy> {
-    strategy: T, // similar to bridge pattern
+    payment_strategy: T, // similar to bridge pattern
 }
 
 impl<T: PaymentStrategy> CheckoutContext<T> {
-    fn new(strategy: T) -> Self {
-        Self { strategy }
+    fn new(payment_strategy: T) -> Self {
+        Self { payment_strategy }
     }
 
     fn complete_purchase(&self, amount: u32) -> String {
-        self.strategy.pay(amount)
+        self.payment_strategy.pay(amount)
     }
 }
 

@@ -43,22 +43,24 @@ impl PaymentStrategy for PayPal {
 // ========================================= //
 
 struct DynamicCheckout {
-    strategy: Box<dyn PaymentStrategy>,
+    payment_strategy: Box<dyn PaymentStrategy>,
 }
 
 impl DynamicCheckout {
-    fn new(strategy: Box<dyn PaymentStrategy>) -> Self {
-        Self { strategy }
+    fn new(payment_strategy: Box<dyn PaymentStrategy>) -> Self {
+        Self { payment_strategy }
     }
 
     fn complete_purchase(&self, amount: u32) -> String {
-        self.strategy.pay(amount)
+        self.payment_strategy.pay(amount)
     }
 
-    // swaps the strategy at runtime
-    // TODO: could also return the old payment strategy using e.g. `.take()`
-    fn change_strategy(&mut self, new_strategy: Box<dyn PaymentStrategy>) {
-        self.strategy = new_strategy;
+    // swaps the strategy at runtime, returning the old one
+    fn change_strategy(
+        &mut self,
+        new_strategy: Box<dyn PaymentStrategy>,
+    ) -> Box<dyn PaymentStrategy> {
+        std::mem::replace(&mut self.payment_strategy, new_strategy)
     }
 }
 
