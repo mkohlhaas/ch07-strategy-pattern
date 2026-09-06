@@ -52,3 +52,8 @@ type, and make them interchangeable.
 | Static (<T: Trait>) | None (Zero-Cost) | None (Inlined) | ❌ No | Performance-critical workflows, configurations fixed at application startup. |
 | Dynamic (Box<dyn T>) | Pointer allocation | Vtable lookup | Yes | Interactive user choices, plugin architectures, runtime configuration changes. |
 | Functional (Fn / FnMut) | Minimal to none | None to minor | ❌ No (unless boxed) | Simple, single-method algorithms lacking complex internal configuration. |
+
+### Open-Closed Principle
+
+- [Plugin Architecture](https://docs.google.com/document/d/1jvVouPA3TU-QQklocDKp5GwMqFjNGPfEh6dD585eRd4)
+- [Open-Closed Principle (OCP)](https://docs.google.com/document/d/1XT4cubBUjB2_Il-vPQu7ipoPanq5mu-lrsbaLlVwsqY)
